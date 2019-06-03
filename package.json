@@ -9,10 +9,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "buefy": "^0.7.6",
     "core-js": "^2.6.5",
     "vue": "^2.6.10"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.8.2",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-plugin-unit-jest": "^3.8.0",
