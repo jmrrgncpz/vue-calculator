@@ -6,7 +6,7 @@ const props = {
   text: {
     type: String,
     required: true
-  }
+  },
 };
 
 export default {
@@ -20,6 +20,6 @@ export default {
 }
 
 .input-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: lavender;
 }
 </style>

@@ -5,22 +5,25 @@
       </div>
 
       <div class="output-text-container is-size-3">
-          {{ value }}
+          {{ input }}
       </div>
   </div>
 </template>
 <script>
 const props = {
-    expression : {
-        type : String,
+    inputs : {
+        type : Array,
+        required : true
+    },
+    input : {
+        type : [Number, String],
+        required : true,
     }
 }
 
 const computed = {
-    value : function(){
-        if(!this.expression) return 0;
-
-        return eval(this.expression);
+    expression : function(){
+        return this.inputs.reduce((acc, curr) => acc += ` ${curr} `, "");
     }
 }
 
