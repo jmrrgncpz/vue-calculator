@@ -1,17 +1,19 @@
+Number.prototype.toPercentage = function(){
+    return this.valueOf() * 0.01;
+}
+
 const createNumberInput = function(value){
     return {
         text : value.toString(),
         class : "number-input",
         action: function (context) {
-            const expressionHasSelectedOperator = !!context.currentOperation;
-
-            if (expressionHasSelectedOperator || context.anEquationIsJustEvaluated) {
-                context.currentOperation = null;
-                context.input = 0;
+            if (context.awaitingNewNumberInput) {
+                context.readyScreenForNextNumber();
             }
 
-            context.input = appendNumberToInput(context.input, value);
-            context.anEquationIsJustEvaluated = false;
+            context.appendNumberToInput(value);
+            context.awaitingNewNumberInput = false;
+            context.awaitingOperator = true;
         }
     }
 }
@@ -33,17 +35,15 @@ const inputModifiers = [
         text: "CE",
         class: "clear-entry-button",
         action: function (context) {
-            context.input = 0;
-            context.currentOperation = null;
+            context.readyScreenForNextNumber();
         }
     },
     {
         text: "C",
         class: "clear-button",
         action: function (context) {
-            context.inputsArray = [];
-            context.input = 0;
-            context.currentOperation = null;
+            context.clearInputsArray();
+            context.readyScreenForNextNumber();
         }
     },
     {
@@ -88,46 +88,24 @@ const generateOperationInputs = function () {
     return x.map(x => {
         x.action = function (context) {
             const operator = x.value;
-            const expressionHasSelectedOperator = !!context.currentOperation;
 
-            if (expressionHasSelectedOperator) {
-                replaceCurrentOperation(context.inputsArray, operator);
-            } else {
+            if (context.awaitingOperator) {
                 context.inputsArray.push(context.input);
 
-                evaluate(context);
+                context.input = context.getEvaluation();
 
                 context.inputsArray.push(operator);
+            } else {
+                context.replaceCurrentOperation(operator);
             }
 
             context.currentOperation = operator;
+            context.awaitingOperator = false;
+            context.awaitingNewNumberInput = true;
         }
 
         return x;
     });
-}
-
-const replaceCurrentOperation = function (inputsArray, operator) {
-    inputsArray.pop();
-    inputsArray.push(operator);
-}
-
-const appendNumberToInput = function (input, number) {
-    if (input == 0) return number;
-    else return input += number.toString();
-}
-
-const evaluate = function (context) {
-    debugger;
-    let inputsArray = context.inputsArray.slice();
-    while (inputsArray.length >= 3) {
-        const expression = inputsArray.splice(0, 3).reduce((acc, current) => `${acc}${current}`, "");
-        const closedExpression = `(${expression})`;
-
-        inputsArray = [closedExpression, ...inputsArray]
-    }
-
-    context.input = eval(inputsArray[0]);
 }
 
 const equalsButton = {
@@ -135,12 +113,29 @@ const equalsButton = {
     class: "fas fa-equals",
     action: function (context) {
         context.inputsArray.push(context.input);
-        evaluate(context);
+        context.input = context.getEvaluation();
 
-        context.$emit('equation-evaluated', { inputsArray: context.inputsArray, result: context.input });
+        context.emitEquationEvaluated();
+        context.clearInputsArray();
 
-        context.inputsArray = [];
-        context.anEquationIsJustEvaluated = true;
+        context.awaitingNewNumberInput = true;
+        context.awaitingOperator = true;
+    }
+}
+
+const percentButton = {
+    text : "",
+    class : "fas fa-percent",
+    action : function(context){
+        const evaluation = context.getEvaluation();
+        const percentage = parseInt(context.input).toPercentage();
+        const percentOfEvaluation = evaluation * percentage;
+        
+        context.input = percentOfEvaluation;
+        context.inputsArray.push(context.input);
+
+        context.awaitingNewNumberInput = true;
+        context.awaitingOperator = true;
     }
 }
 
@@ -148,5 +143,6 @@ export default [
     ...inputModifiers,
     ...generateNumberInputs(),
     ...generateOperationInputs(),
-    equalsButton
+    equalsButton,
+    percentButton
 ]

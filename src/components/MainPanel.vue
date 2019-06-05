@@ -36,6 +36,8 @@ const data = function() {
     input : 0,
     inputButtonsData,
     currentOperation : null,
+    awaitingNewNumberInput : true,
+    awaitingOperator : false,
     anEquationIsJustEvaluated : false
   };
 };
@@ -43,6 +45,37 @@ const data = function() {
 const methods = {
   triggerButton: function(action) {
     action(this);
+  },
+  readyScreenForNextNumber : function(){
+    this.currentOperation = null;
+    this.input = 0;
+  },
+  clearInputsArray : function(){
+    this.inputsArray = [];
+  },
+  replaceCurrentOperation : function(newOperator){
+    this.inputsArray.pop();
+    this.inputsArray.push(newOperator);
+  },
+  getEvaluation : function(){
+    let inputsArray = this.inputsArray.slice();
+    while (inputsArray.length >= 3) {
+        const expression = inputsArray
+                            .splice(0, 3)
+                            .reduce((acc, current) => `${acc}${current}`, "");
+        const closedExpression = `(${expression})`;
+
+        inputsArray = [closedExpression, ...inputsArray]
+    }
+
+    return eval(inputsArray[0]);
+  },
+  appendNumberToInput : function(number){
+    if(this.input == 0) this.input = number;
+    else return this.input += number.toString();
+  },
+  emitEquationEvaluated : function(){
+    this.$emit('equation-evaluated', { inputsArray: this.inputsArray, result: this.input });
   }
 };
 
