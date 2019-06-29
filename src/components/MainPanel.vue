@@ -7,12 +7,18 @@
       <span class="title is-marginless is-size-4">Standard</span>
     </div>
     <div class="content">
-      <screen class="field" v-bind:inputs="inputsArray" v-bind:input="input"></screen>
+      <screen
+        class="field"
+        v-bind:inputs="inputsArray"
+        v-bind:input="input">
+      </screen>
       <div class="input-buttons-container">
         <input-button
-          v-for="inputButton in inputButtonsData"
+          v-for="(inputButton, i) in inputButtonsData"
+          v-bind:key="`inputButton-${i}`"
           v-bind:text="inputButton.text"
           v-bind:class="inputButton.class"
+          v-bind:style="inputButton.style"
           v-on:click.native="triggerButton(inputButton.action)"
         ></input-button>
       </div>
@@ -37,12 +43,22 @@ const data = function() {
     inputButtonsData,
     currentOperation : null,
     awaitingNewNumberInput : true,
-    awaitingOperator : false,
-    anEquationIsJustEvaluated : false
+    awaitingOperator : true,
+    inputHasTransformed : false,
   };
 };
 
 const methods = {
+  appendInputToInputs : function(){
+    this.appendExpressionToInputs(this.input);
+  },
+  appendExpressionToInputs : function(text, expression){
+
+    this.inputsArray.push({
+      text,
+      expression : expression || text
+    });
+  },
   triggerButton: function(action) {
     action(this);
   },
@@ -53,19 +69,14 @@ const methods = {
   clearInputsArray : function(){
     this.inputsArray = [];
   },
-  replaceCurrentOperation : function(newOperator){
-    this.inputsArray.pop();
-    this.inputsArray.push(newOperator);
-  },
   getEvaluation : function(){
-    let inputsArray = this.inputsArray.slice();
-    while (inputsArray.length >= 3) {
-        const expression = inputsArray
-                            .splice(0, 3)
-                            .reduce((acc, current) => `${acc}${current}`, "");
-        const closedExpression = `(${expression})`;
+    let inputsArray = this.inputsArray.map(input => input.expression.toString());
 
-        inputsArray = [closedExpression, ...inputsArray]
+    while (inputsArray.length >= 3) {
+      const expression = inputsArray
+                          .splice(0, 3)
+                          .reduce((acc, curr) => `${acc}${curr}`, "");
+      inputsArray = [`(${expression})`, ...inputsArray]
     }
 
     return eval(inputsArray[0]);
@@ -76,6 +87,10 @@ const methods = {
   },
   emitEquationEvaluated : function(){
     this.$emit('equation-evaluated', { inputsArray: this.inputsArray, result: this.input });
+  },
+  resetFlags : function(){
+    this.awaitingOperator = true;
+    this.awaitingNewNumberInput = true;
   }
 };
 
@@ -101,8 +116,9 @@ export default {
 }
 
 .input-buttons-container{
-    display : flex;
-    flex-wrap: wrap;
+  display : grid;
+  grid-template-columns: repeat(4, 1fr);
+  
 }
 .content {
   display: flex;

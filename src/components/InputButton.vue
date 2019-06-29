@@ -17,9 +17,15 @@ export default {
 .input-button {
   border: 1px solid rgba(255, 255, 255, 0.2);
   flex-basis : 25%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .input-button:hover {
   background: lavender;
 }
+
+
 </style>

@@ -1,118 +1,21 @@
-Number.prototype.toPercentage = function(){
-    return this.valueOf() * 0.01;
-}
+import operationInputs from "./operationInputs";
+import inputModifiers from "./input-modifiers"
+import numberInputs from "./numberInputs";
+import { createNumberInput } from "./numberInputFactory";
 
-const createNumberInput = function(value){
-    return {
-        text : value.toString(),
-        class : "number-input",
-        action: function (context) {
-            if (context.awaitingNewNumberInput) {
-                context.readyScreenForNextNumber();
-            }
-
-            context.appendNumberToInput(value);
-            context.awaitingNewNumberInput = false;
-            context.awaitingOperator = true;
-        }
+const dot = {
+    ...createNumberInput("."),
+    style : {
+        'grid-row' : 6,
+        'grid-column' : 3,
     }
-}
-
-const generateNumberInputs = function () {
-    const numbersInputs = [];
-    for (let i = 0; i <= 9; i++) {
-        const numberInput = createNumberInput(i);
-        numbersInputs.push(numberInput);
-    }
-
-    numbersInputs.push(createNumberInput("."));
-
-    return numbersInputs
-}
-
-const inputModifiers = [
-    {
-        text: "CE",
-        class: "clear-entry-button",
-        action: function (context) {
-            context.readyScreenForNextNumber();
-        }
-    },
-    {
-        text: "C",
-        class: "clear-button",
-        action: function (context) {
-            context.clearInputsArray();
-            context.readyScreenForNextNumber();
-        }
-    },
-    {
-        text: "",
-        class: "backspace-button fas fa-backspace",
-        action: function (context) {
-            if (context.input.toString().length == 1) {
-                context.input = 0;
-                return;
-            }
-
-            const newInput = context.input.toString().slice(0, -1);
-            context.input = parseInt(newInput);
-        }
-    }
-]
-
-const generateOperationInputs = function () {
-    const x = [
-        {
-            text: "",
-            class: "fas fa-plus",
-            value: "+",
-        },
-        {
-            text: "",
-            class: "fas fa-minus",
-            value: "-",
-        },
-        {
-            text: "",
-            class: "fas fa-times",
-            value: "*",
-        },
-        {
-            text: "",
-            class: "fas fa-divide",
-            value: "/",
-        }
-    ]
-
-    return x.map(x => {
-        x.action = function (context) {
-            const operator = x.value;
-
-            if (context.awaitingOperator) {
-                context.inputsArray.push(context.input);
-
-                context.input = context.getEvaluation();
-
-                context.inputsArray.push(operator);
-            } else {
-                context.replaceCurrentOperation(operator);
-            }
-
-            context.currentOperation = operator;
-            context.awaitingOperator = false;
-            context.awaitingNewNumberInput = true;
-        }
-
-        return x;
-    });
 }
 
 const equalsButton = {
-    text: "",
-    class: "fas fa-equals",
+    text: "=",
+    // class: "fas fa-equals",
     action: function (context) {
-        context.inputsArray.push(context.input);
+        context.appendInputToInputs();
         context.input = context.getEvaluation();
 
         context.emitEquationEvaluated();
@@ -120,29 +23,121 @@ const equalsButton = {
 
         context.awaitingNewNumberInput = true;
         context.awaitingOperator = true;
+    },
+    style : {
+        'grid-row' : 6,
+        'grid-column' : 4
     }
 }
 
 const percentButton = {
-    text : "",
-    class : "fas fa-percent",
+    text : "%",
+    // class : "fas fa-percent",
     action : function(context){
-        const evaluation = context.getEvaluation();
+        const evaluation = !context.inputsArray.length ? 0 : context.getEvaluation();
         const percentage = parseInt(context.input).toPercentage();
         const percentOfEvaluation = evaluation * percentage;
         
         context.input = percentOfEvaluation;
-        context.inputsArray.push(context.input);
+        context.appendInputToInputs();
 
         context.awaitingNewNumberInput = true;
         context.awaitingOperator = true;
+        context.inputHasTransformed = true;
+    },
+    style : {
+        'grid-row' : 1,
+        'grid-column' : 1
     }
 }
 
+const rootButton = {
+    text : "√",
+    // class: "fas fa-square-root-alt",
+    action : function(context){
+        const value = Math.sqrt(context.input);
+        context.appendExpressionToInputs(`√(${context.input})`, value);
+        context.input = value;
+
+        context.awaitingNewNumberInput = true;
+        context.awaitingOperator = true;
+        context.inputHasTransformed = true;
+    },
+    style : {
+        'grid-row' : 1,
+        'grid-column' : 2
+    }
+}
+
+const squareButton = {
+    text : "x²",
+    class : "",
+    action : function(context){
+        const value = context.input*context.input;
+        context.appendExpressionToInputs(`sqr(${context.input})`, value);
+        context.input = value;
+
+        context.awaitingNewNumberInput = true;
+        context.awaitingOperator = true;
+        context.inputHasTransformed = true;
+    },
+    style : {
+        'grid-row' : 1,
+        'grid-column' : 3
+    }
+}
+
+const divideFrom1 = {
+    text : "1/x",
+    class : "",
+    action : function(context){
+        if(context.input == 0){
+            context.appendExpressionToInputs("1/(0)", 0);
+            context.input = "Cannot divide by zero"
+            return;
+        }
+
+        const value = (1 / context.input);
+        context.appendExpressionToInputs(`1/(${context.input})`, value);
+        context.input = value;
+
+        context.awaitingNewNumberInput = true;
+        context.awaitingOperator = true;
+        context.inputHasTransformed = true;
+    },
+    style : {
+        'grid-row' : 1,
+        'grid-column' : 4
+    }
+}
+
+const negate = {
+    text : "±",
+    class : "",
+    action : function(context){
+        if(context.input == 0) return;
+
+        context.input = -(context.input);
+    },
+    style : {
+        'grid-row' : 6,
+        'grid-column' : 1
+    }
+}
+
+
+
+
+
 export default [
     ...inputModifiers,
-    ...generateNumberInputs(),
-    ...generateOperationInputs(),
+    ...numberInputs,
+    ...operationInputs,
     equalsButton,
-    percentButton
+    percentButton,
+    rootButton,
+    squareButton,
+    negate,
+    divideFrom1,
+    dot
 ]

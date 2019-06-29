@@ -23,7 +23,7 @@ const props = {
 
 const computed = {
     expression : function(){
-        return this.inputs.reduce((acc, curr) => acc += ` ${curr} `, "");
+        return this.inputs.reduce((acc, curr) => `${acc} ${curr.text} `, "");
     }
 }
 
