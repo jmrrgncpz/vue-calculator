@@ -65,6 +65,19 @@ body,
   width: 600px;
 }
 
+.flex-column{
+  display : flex;
+  flex-direction: column;
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-1{
+  flex: 1;
+}
 
 .header {
   display: inline-flex;
@@ -86,5 +99,16 @@ html {
 
 .number-input{
   background: rgba(255,255,255, 0.5)
+}
+
+.button{
+  background: none;
+  border : 1px solid transparent; 
+  cursor : default;
+}
+
+.button:hover{
+  border: 1px solid whitesmoke;
+  background : rgba(255,255,255, 0.5)
 }
 </style>

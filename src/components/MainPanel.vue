@@ -91,6 +91,7 @@ const methods = {
   resetFlags : function(){
     this.awaitingOperator = true;
     this.awaitingNewNumberInput = true;
+    this.inputHasTransformed = false;
   }
 };
 
