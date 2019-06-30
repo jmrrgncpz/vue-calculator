@@ -1,15 +1,15 @@
 <template>
   <div class="window-bar field">
-    <span class="title is-marginless is-size-5">Calculator</span>
+    <span class="title is-marginless  is-size-6">Calculator</span>
     <div class="buttons">
       <div class="button">
-        <b-icon icon="window-minimize"></b-icon>
+        <b-icon icon="window-minimize is-size-6"></b-icon>
       </div>
       <div class="button">
-        <b-icon icon="window-maximize"></b-icon>
+        <b-icon icon="window-maximize is-size-6"></b-icon>
       </div>
       <div class="button">
-        <b-icon icon="times"></b-icon>
+        <b-icon icon="times is-size-6"></b-icon>
       </div>
     </div>
   </div>

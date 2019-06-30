@@ -9,14 +9,14 @@
               <history-equation v-for="equation in history" v-bind:equation="equation"></history-equation>
           </div>
           <div class="clear-button-container">
-              <button class="button btn-clear-history is-pulled-right">
+              <button v-on:click="$emit('clear-btn-clicked')" class="button btn-clear-history is-pulled-right">
                 <b-icon icon="trash"></b-icon>
             </button>
           </div>
       </div>
     </div>
     <div v-else>
-      <strong class="is-size-7">There is no history yet</strong>
+      <strong class="is-size-7">There's no history yet</strong>
     </div>
   </div>
 </template>

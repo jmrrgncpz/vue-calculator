@@ -4,7 +4,7 @@
       <the-header></the-header>
       <div class="panels">
         <main-panel v-on:equation-evaluated="addEquationToHistory"></main-panel>
-        <sub-panel v-bind:history="history"></sub-panel>
+        <sub-panel v-bind:history="history" v-on:clear-btn-clicked="clearHistory"></sub-panel>
       </div>
     </div>
   </div>
@@ -30,6 +30,9 @@ const methods = {
     }
 
     this.history.unshift(equation);
+  },
+  clearHistory : function(){
+    this.history = [];
   }
 }
 
