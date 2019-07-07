@@ -27,7 +27,7 @@ const equalsButton = {
 
         context.input = context.getEvaluation();
 
-        context.emitEquationEvaluated();
+        context.addEquationToHistory();
         context.clearInputsArray();
 
 
@@ -47,11 +47,33 @@ const percentButton = {
     text : "%",
     // class : "fas fa-percent",
     action : function(context){
-        const evaluation = !context.inputsArray.length ? 0 : context.getEvaluation();
-        const percentage = parseInt(context.input).toPercentage();
-        const percentOfEvaluation = evaluation * percentage;
+        if(context.inputsArray.length < 2){
+            context.input = 0;
+        }else if(context.inputHasTransformed){
+            const toTransform = context.inputsArray[context.inputsArray.length - 1].expression;
+
+            if(context.currentOperation == "+" || context.currentOperation == "-"){
+                let arr = context.inputsArray.slice(0, -2);
+                const evaluation = context.getEvaluation(arr);
+                const percentage = parseFloat(toTransform).toPercentage();
+                const percentOfEvaluation = evaluation * percentage;
+                context.input = percentOfEvaluation;
+            }else{
+                context.input = parseFloat(toTransform).toPercentage();
+            }
+
+            context.inputsArray.pop();
+        }else{
+            if(context.currentOperation == "+" || context.currentOperation == "-"){
+                const evaluation = context.getEvaluation();
+                const percentage = parseFloat(context.input).toPercentage();
+                const percentOfEvaluation = evaluation * percentage;
+                context.input = percentOfEvaluation;
+            }else{
+                context.input = parseFloat(context.input).toPercentage();
+            }
+        }
         
-        context.input = percentOfEvaluation;
         context.appendInputToInputs();
 
         context.newNumberInputReplacesCurrentInput = true;

@@ -3,8 +3,7 @@
     <div class="main box">
       <the-header></the-header>
       <div class="panels">
-        <main-panel v-on:equation-evaluated="addEquationToHistory"></main-panel>
-        <sub-panel v-bind:history="history" v-on:clear-btn-clicked="clearHistory"></sub-panel>
+        <main-panel></main-panel>
       </div>
     </div>
     <div class="background-filter"></div>
@@ -15,37 +14,13 @@
 <script>
 import theHeader from "./components/TheHeader";
 import mainPanel from "./components/MainPanel";
-import subPanel from "./components/SubPanel";
-
-const data = function(){
-  return {
-    history : []
-  }
-}
-
-const methods = {
-  addEquationToHistory : function({inputsArray, result}){
-    const equation = {
-        inputsArray,
-        result
-    }
-
-    this.history.unshift(equation);
-  },
-  clearHistory : function(){
-    this.history = [];
-  }
-}
 
 export default {
   name: "app",
   components: {
     theHeader,
     mainPanel,
-    subPanel
   },
-  data,
-  methods
 };
 
 </script>
@@ -102,12 +77,6 @@ body,
   display: inline-flex;
   align-items: center;
 }
-
-.panels{
-  display: flex;
-  justify-content: space-between;
-}
-
 .number-input{
   background: rgba(255,255,255, 0.5)
 }

@@ -1,5 +1,6 @@
 <template>
-  <div class="main-panel">
+<div class="panels">
+<div class="main-panel">
     <div class="header">
       <button class="button">
         <b-icon icon="bars"></b-icon>
@@ -24,16 +25,44 @@
       </div>
     </div>
   </div>
+  <div class="sub-panel flex-column">
+    <div class="header">
+      <span class="title is-size-4 is-marginless">History</span>
+    </div>
+    <div class="content history-container flex-1" v-if="!!history.length">
+      <div class="history flex-column">
+          <div class="equations-container flex-1">
+              <history-equation 
+                v-for="equation in history" 
+                v-bind:equation="equation"
+                v-on:click.native="setEquationToScreen(equation)"
+                >
+              </history-equation>
+          </div>
+          <div class="clear-button-container">
+              <button v-on:click="$emit('clear-btn-clicked')" class="button btn-clear-history is-pulled-right">
+                <b-icon icon="trash"></b-icon>
+            </button>
+          </div>
+      </div>
+    </div>
+    <div v-else>
+      <strong class="is-size-7">There's no history yet</strong>
+    </div>
+  </div>
+</div>
 </template>
 <script>
 import screen from "@/components/Screen";
 import inputButton from "@/components/InputButton";
+import historyEquation from "./HistoryEquation";
 
 import inputButtonsData from "@/input-buttons-data";
 
 const components = {
   screen,
-  inputButton
+  inputButton,
+  historyEquation
 };
 
 const data = function() {
@@ -47,6 +76,7 @@ const data = function() {
     inputHasTransformed : false,
     equationHasJustEvaluated : false,
     lastOperation : "",
+    history : []
   };
 };
 
@@ -65,14 +95,14 @@ const methods = {
     action(this);
   },
   readyScreenForNextNumber : function(){
-    this.currentOperation = null;
     this.input = 0;
   },
   clearInputsArray : function(){
     this.inputsArray = [];
   },
-  getEvaluation : function(){
-    let inputsArray = this.inputsArray.map(input => input.expression.toString());
+  getEvaluation : function(arr){
+    let x = arr || this.inputsArray;
+    let inputsArray = x.map(input => input.expression.toString());
 
     while (inputsArray.length >= 3) {
       const expression = inputsArray
@@ -87,25 +117,41 @@ const methods = {
     if(this.input == 0) this.input = number;
     else return this.input += number.toString();
   },
-  emitEquationEvaluated : function(){
-    this.$emit('equation-evaluated', { inputsArray: this.inputsArray, result: this.input });
-  },
   resetFlags : function(){
     this.awaitingOperator = true;
     this.newNumberInputReplacesCurrentInput = true;
     this.inputHasTransformed = false;
     this.equationHasJustEvaluated = false;
   },
-};
+  addEquationToHistory : function(){
+    const equation = {
+        inputsArray : this.inputsArray,
+        result : this.input
+    }
 
-const computed = {
-}
+    this.history.unshift(equation);
+  },
+  clearHistory : function(){
+    this.history = [];
+  },
+  setEquationToScreen : function({ inputsArray, result }){
+    this.awaitingOperator = true;
+    this.newNumberInputReplacesCurrentInput = true;
+    this.inputHasTransformed = true;
+    this.equationHasJustEvaluated = false;
+    this.lastOperation = "";
+
+    this.inputsArray = inputsArray.slice();
+    this.input = result;
+
+    this.currentOperation = this.inputsArray.length < 2 ? null : this.inputsArray[this.inputsArray.length - 2].text;
+  }
+};
 
 export default {
   components,
   data,
   methods,
-  computed
 };
 </script>
 
@@ -127,5 +173,45 @@ export default {
 .content {
   display: flex;
   flex-direction: column;
+}
+
+
+
+.panels{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.sub-panel {
+  flex-grow: 1;
+  min-width: 39%;
+  max-width: 39%;
+}
+
+.history-container {
+  position: relative;
+}
+
+.history{
+    position : absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.equations-container{
+    overflow: auto;
+}
+
+::-webkit-scrollbar{
+    width: 2px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb{
+    width : 2px;
+    background: rgba(255,255,255, 0.5);
 }
 </style>
