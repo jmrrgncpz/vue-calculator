@@ -1,10 +1,10 @@
 <template>
 <div class="history-equation is-size-7">
     <div class="left has-text-right">
-        {{ leftOfEquation }} =
+        <span>{{ leftOfEquation }} =</span>
     </div>
-    <div class="right has-text-right">
-        {{ equation.result }}
+    <div class="right has-text-right equation-result-container">
+        <span class="equation-result">{{ equation.result }}</span>
     </div>
 </div>
 </template>
@@ -14,7 +14,7 @@ const props = {
         type : Object,
         required : true,
         validator : (value) => {
-            return !!value.inputsArray.length && !!value.result;
+            return !!value.inputsArray.length && !!value.result.toString();
         }
     }
 }
@@ -43,6 +43,11 @@ export default {
     .history-equation:hover{
         background : rgba(255,255,255,.7);
         border-radius: .25em;
+    }
+
+    .equation-result-container{
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>
 

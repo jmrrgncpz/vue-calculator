@@ -7,13 +7,15 @@ const createNumberInput = function(value){
                 context.inputsArray.pop();
             }
 
-            if (context.awaitingNewNumberInput) {
+            if (context.newNumberInputReplacesCurrentInput) {
                 context.readyScreenForNextNumber();
-                context.awaitingNewNumberInput = false;
+                context.newNumberInputReplacesCurrentInput = false;
             }
 
             context.appendNumberToInput(value);
             context.awaitingOperator = true;
+            context.equationHasJustEvaluated = false;
+            context.inputHasTransformed = false;
         },
     }
 }

@@ -15,14 +15,27 @@ const equalsButton = {
     text: "=",
     // class: "fas fa-equals",
     action: function (context) {
-        context.appendInputToInputs();
+        if(!context.inputHasTransformed){
+            context.appendInputToInputs();
+        } 
+
+        if(context.equationHasJustEvaluated && context.lastOperation.length >= 2){
+            context.inputsArray = context.inputsArray.concat(context.lastOperation);
+        }else{
+            context.lastOperation = context.inputsArray.slice(-2);
+        }
+
         context.input = context.getEvaluation();
 
         context.emitEquationEvaluated();
         context.clearInputsArray();
 
-        context.awaitingNewNumberInput = true;
+
+
+        context.newNumberInputReplacesCurrentInput = true;
         context.awaitingOperator = true;
+        context.equationHasJustEvaluated = true;
+        context.inputHasTransformed = false;
     },
     style : {
         'grid-row' : 6,
@@ -41,9 +54,10 @@ const percentButton = {
         context.input = percentOfEvaluation;
         context.appendInputToInputs();
 
-        context.awaitingNewNumberInput = true;
+        context.newNumberInputReplacesCurrentInput = true;
         context.awaitingOperator = true;
         context.inputHasTransformed = true;
+        context.equationHasJustEvaluated = false;
     },
     style : {
         'grid-row' : 1,
@@ -59,9 +73,10 @@ const rootButton = {
         context.appendExpressionToInputs(`√(${context.input})`, value);
         context.input = value;
 
-        context.awaitingNewNumberInput = true;
+        context.newNumberInputReplacesCurrentInput = true;
         context.awaitingOperator = true;
         context.inputHasTransformed = true;
+        context.equationHasJustEvaluated = false;
     },
     style : {
         'grid-row' : 1,
@@ -77,9 +92,10 @@ const squareButton = {
         context.appendExpressionToInputs(`sqr(${context.input})`, value);
         context.input = value;
 
-        context.awaitingNewNumberInput = true;
+        context.newNumberInputReplacesCurrentInput = true;
         context.awaitingOperator = true;
         context.inputHasTransformed = true;
+        context.equationHasJustEvaluated = false;
     },
     style : {
         'grid-row' : 1,
@@ -101,9 +117,10 @@ const divideFrom1 = {
         context.appendExpressionToInputs(`1/(${context.input})`, value);
         context.input = value;
 
-        context.awaitingNewNumberInput = true;
+        context.newNumberInputReplacesCurrentInput = true;
         context.awaitingOperator = true;
         context.inputHasTransformed = true;
+        context.equationHasJustEvaluated = false;
     },
     style : {
         'grid-row' : 1,
@@ -116,8 +133,11 @@ const negate = {
     class : "",
     action : function(context){
         if(context.input == 0) return;
-
-        context.input = -(context.input);
+        if(context.inputHasTransformed){
+            
+        }else{
+            context.input = -(context.input);
+        }
     },
     style : {
         'grid-row' : 6,

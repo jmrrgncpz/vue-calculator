@@ -19,6 +19,8 @@ export default [
         text: "",
         class: "backspace-button fas fa-backspace",
         action: function (context) {
+            if(context.newNumberInputReplacesCurrentInput) return;
+            
             if (context.input.toString().length == 1) {
                 context.input = 0;
                 return;

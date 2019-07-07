@@ -42,9 +42,11 @@ const data = function() {
     input : 0,
     inputButtonsData,
     currentOperation : null,
-    awaitingNewNumberInput : true,
+    newNumberInputReplacesCurrentInput : true,
     awaitingOperator : true,
     inputHasTransformed : false,
+    equationHasJustEvaluated : false,
+    lastOperation : "",
   };
 };
 
@@ -90,9 +92,10 @@ const methods = {
   },
   resetFlags : function(){
     this.awaitingOperator = true;
-    this.awaitingNewNumberInput = true;
+    this.newNumberInputReplacesCurrentInput = true;
     this.inputHasTransformed = false;
-  }
+    this.equationHasJustEvaluated = false;
+  },
 };
 
 const computed = {

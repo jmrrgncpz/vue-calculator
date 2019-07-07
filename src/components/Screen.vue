@@ -1,11 +1,11 @@
 <template>
   <div class="screen">
-      <div class="expression-container is-size-5">
-          {{ expression }}
+      <div class="expression-container has-text-right is-size-6">
+        {{ expression }}
       </div>
 
-      <div class="output-text-container is-size-3">
-          {{ input }}
+      <div class="output-text-container has-text-right is-size-3">
+        {{ input }}
       </div>
   </div>
 </template>
@@ -37,10 +37,8 @@ export default {
     border-bottom: 1px solid white;
 }
 
-.screen > *{
-    display: flex;
-    justify-content: flex-end;
-    padding: 5px;
+.expression-container{
+    min-height: 1.5em;
 }
 
 </style>

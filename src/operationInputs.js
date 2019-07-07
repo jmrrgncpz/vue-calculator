@@ -60,7 +60,8 @@ const generateOperationInputs = function () {
             context.appendExpressionToInputs(x.text, x.value);
 
             context.currentOperation = operator;
-            context.awaitingNewNumberInput = true;
+            context.newNumberInputReplacesCurrentInput = true;
+            context.equationHasJustEvaluated = false;
         }
 
         return x;

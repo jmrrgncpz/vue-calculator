@@ -65,7 +65,8 @@ body,
 
 .main {
   background: rgba(255, 255, 255, 0.2);
-  width: 600px;
+  width: 80%;
+  max-width: 800px;
 }
 
 .flex-column{
@@ -114,4 +115,10 @@ html {
   border: 1px solid whitesmoke;
   background : rgba(255,255,255, 0.5)
 }
+@media only screen and (max-width:600px) {
+  .sub-panel{
+    display: none;
+  }
+}
+
 </style>
