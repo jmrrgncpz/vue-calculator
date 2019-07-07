@@ -6,7 +6,12 @@
     <div class="content history-container flex-1" v-if="!!history.length">
       <div class="history flex-column">
           <div class="equations-container flex-1">
-              <history-equation v-for="equation in history" v-bind:equation="equation"></history-equation>
+              <history-equation 
+                v-for="equation in history" 
+                v-bind:equation="equation"
+                v-on:click="emit('history-equation-clicked', equation)"
+                >
+              </history-equation>
           </div>
           <div class="clear-button-container">
               <button v-on:click="$emit('clear-btn-clicked')" class="button btn-clear-history is-pulled-right">

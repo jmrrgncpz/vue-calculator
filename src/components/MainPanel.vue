@@ -19,7 +19,7 @@
           v-bind:text="inputButton.text"
           v-bind:class="inputButton.class"
           v-bind:style="inputButton.style"
-          v-on:click.native="triggerButton(inputButton.action)"
+          v-on:click.native="executeButtonAction(inputButton.action)"
         ></input-button>
       </div>
     </div>
@@ -61,7 +61,7 @@ const methods = {
       expression : expression || text
     });
   },
-  triggerButton: function(action) {
+  executeButtonAction: function(action) {
     action(this);
   },
   readyScreenForNextNumber : function(){
