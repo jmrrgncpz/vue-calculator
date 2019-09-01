@@ -3,7 +3,7 @@
     <div class="main box">
       <the-header></the-header>
       <div class="panels">
-        <main-panel v-on:clear-btn-clicked="clearHistory"></main-panel>
+        <main-panel></main-panel>
       </div>
     </div>
     <div class="background-filter"></div>

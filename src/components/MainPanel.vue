@@ -88,7 +88,10 @@ const methods = {
 
     this.inputsArray.push({
       text,
-      expression : expression || text
+      expression : (expression != '' ||
+                    expression != null ||
+                    expression != undefined) ?
+                    expression : text
     });
   },
   executeButtonAction: function(action) {
