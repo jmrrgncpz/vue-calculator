@@ -40,7 +40,7 @@
               </history-equation>
           </div>
           <div class="clear-button-container">
-              <button v-on:click="$emit('clear-btn-clicked')" class="button btn-clear-history is-pulled-right">
+              <button v-on:click="clearHistory" class="button btn-clear-history is-pulled-right">
                 <b-icon icon="trash"></b-icon>
             </button>
           </div>
