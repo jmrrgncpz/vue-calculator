@@ -8,7 +8,8 @@ const dot = {
     style : {
         'grid-row' : 6,
         'grid-column' : 3,
-    }
+    },
+    isDisabledWhenCannotDivideByZeroIsActive: true
 }
 
 const equalsButton = {
@@ -40,7 +41,7 @@ const equalsButton = {
     style : {
         'grid-row' : 6,
         'grid-column' : 4
-    }
+    },
 }
 
 const percentButton = {
@@ -84,7 +85,8 @@ const percentButton = {
     style : {
         'grid-row' : 1,
         'grid-column' : 1
-    }
+    },
+    isDisabledWhenCannotDivideByZeroIsActive: true
 }
 
 const rootButton = {
@@ -103,7 +105,8 @@ const rootButton = {
     style : {
         'grid-row' : 1,
         'grid-column' : 2
-    }
+    },
+    isDisabledWhenCannotDivideByZeroIsActive: true
 }
 
 const squareButton = {
@@ -122,7 +125,8 @@ const squareButton = {
     style : {
         'grid-row' : 1,
         'grid-column' : 3
-    }
+    },
+    isDisabledWhenCannotDivideByZeroIsActive: true
 }
 
 const divideFrom1 = {
@@ -132,6 +136,8 @@ const divideFrom1 = {
         if(context.input == 0){
             context.appendExpressionToInputs("1/(0)", 0);
             context.input = "Cannot divide by zero"
+
+            context.cannotDivideByZeroIsActive = true;
             return;
         }
 
@@ -147,7 +153,8 @@ const divideFrom1 = {
     style : {
         'grid-row' : 1,
         'grid-column' : 4
-    }
+    },
+    isDisabledWhenCannotDivideByZeroIsActive: true
 }
 
 const negate = {
@@ -164,12 +171,9 @@ const negate = {
     style : {
         'grid-row' : 6,
         'grid-column' : 1
-    }
+    },
+    isDisabledWhenCannotDivideByZeroIsActive: true
 }
-
-
-
-
 
 export default [
     ...inputModifiers,

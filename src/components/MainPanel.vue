@@ -20,7 +20,9 @@
           v-bind:text="inputButton.text"
           v-bind:class="inputButton.class"
           v-bind:style="inputButton.style"
-          v-on:click.native="executeButtonAction(inputButton.action)"
+          v-bind:cannot-divide-by-zero-is-active="cannotDivideByZeroIsActive"
+          v-bind:is-disabled-when-cannot-divide-by-zero-is-active="inputButton.isDisabledWhenCannotDivideByZeroIsActive"
+          v-on:click.native="executeButtonAction(inputButton.action, inputButton)"
         ></input-button>
       </div>
     </div>
@@ -76,7 +78,8 @@ const data = function() {
     inputHasTransformed : false,
     equationHasJustEvaluated : false,
     lastOperation : "",
-    history : []
+    history : [],
+    cannotDivideByZeroIsActive : false
   };
 };
 
@@ -85,16 +88,16 @@ const methods = {
     this.appendExpressionToInputs(this.input);
   },
   appendExpressionToInputs : function(text, expression){
-
     this.inputsArray.push({
       text,
-      expression : (expression != '' ||
-                    expression != null ||
-                    expression != undefined) ?
-                    expression : text
+      expression : (expression == '' ||
+                    expression == null ||
+                    expression == undefined) ?
+                    text : expression
     });
   },
-  executeButtonAction: function(action) {
+  executeButtonAction: function(action, inputButton) {
+    if(inputButton.isDisabledWhenCannotDivideByZeroIsActive && this.cannotDivideByZeroIsActive) return;
     action(this);
   },
   readyScreenForNextNumber : function(){

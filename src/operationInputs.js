@@ -64,6 +64,8 @@ const generateOperationInputs = function () {
             context.equationHasJustEvaluated = false;
         }
 
+        x.isDisabledWhenCannotDivideByZeroIsActive = true;
+
         return x;
     });
 }

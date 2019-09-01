@@ -1,5 +1,5 @@
 <template>
-  <div class="input-button has-text-centered is-size-4">{{ text }}</div>
+  <div class="input-button has-text-centered is-size-4" v-bind:disabled="cannotDivideByZeroIsActive && isDisabledWhenCannotDivideByZeroIsActive">{{ text }}</div>
 </template>
 <script>
 const props = {
@@ -7,6 +7,15 @@ const props = {
     type: String,
     required: true
   },
+  cannotDivideByZeroIsActive :{
+    type : Boolean,
+    required : true
+  },
+  isDisabledWhenCannotDivideByZeroIsActive : {
+    type : Boolean ,
+    required : false,
+    default : false
+  }
 };
 
 export default {
@@ -27,5 +36,15 @@ export default {
 
 .input-button:hover {
   background: lavender;
+}
+
+[disabled]{
+  cursor : not-allowed;
+  color : gray;
+  background: transparent !important;
+}
+
+[disabled]:hover{
+  background: transparent !important;
 }
 </style>
