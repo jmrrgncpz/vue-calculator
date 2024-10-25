@@ -11,7 +11,7 @@
   "dependencies": {
     "buefy": "^0.7.6",
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.8.2",
